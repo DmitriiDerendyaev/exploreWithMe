@@ -1,8 +1,6 @@
 package org.example.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,9 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "stats")
-public class Stats {
+public class    Stats {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

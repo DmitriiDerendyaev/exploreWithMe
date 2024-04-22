@@ -2,6 +2,7 @@ package org.example.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.example.StatsDto;
+import org.example.StatsDtoOutput;
 import org.example.model.Stats;
 import org.springframework.stereotype.Component;
 
