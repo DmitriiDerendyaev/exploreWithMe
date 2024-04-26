@@ -6,16 +6,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Map;
-
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handlerStatsValidationException(StatsValidationException e) {
-        log.info(e.getMessage(), e);
-        return Map.of("Validation for statistic failed", e.getMessage());
+    public ErrorResponse handlerStatsValidationException(final StatsValidationException e) {
+        log.warn(e.getMessage(), e);
+        return new ErrorResponse("Validation for statistic failed: ", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerInternalServerError(final Throwable e) {
+        log.warn(e.getMessage(), e);
+        return new ErrorResponse("Server error: ", e.getMessage());
     }
 }
