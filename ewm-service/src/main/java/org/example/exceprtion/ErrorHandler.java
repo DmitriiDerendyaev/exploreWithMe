@@ -47,6 +47,15 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleObjectAlreadyExistException(final ObjectAlreadyExistException e) {
+        log.warn("Object with already exist");
+        return new ErrorResponse(HttpStatus.CONFLICT, "Object with already exist",
+                e.getMessage(), LocalDateTime.now());
+
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidRequestException(final InvalidRequestException e) {
         log.warn("Incorrectly made request.");
