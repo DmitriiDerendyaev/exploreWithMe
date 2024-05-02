@@ -17,7 +17,7 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
-    private long id;
+    private Long id;
 
     @JsonFormat(pattern = DATE_FORMAT)
     @Column(name = "created")

@@ -2,6 +2,7 @@ package org.example.user.mapper;
 
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
+import org.example.user.dto.UserShortDto;
 import org.example.user.model.User;
 import org.springframework.stereotype.Component;
 
@@ -21,5 +22,12 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .build();
+    }
+
+    public UserShortDto toShort(User user) {
+        UserShortDto userShortDto = new UserShortDto();
+        userShortDto.setId(user.getId());
+        userShortDto.setName(user.getName());
+        return userShortDto;
     }
 }
