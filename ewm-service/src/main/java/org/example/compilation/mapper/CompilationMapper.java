@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class CompilationMapper {
     private final EventMapper eventMapper;
 
-    public CompilationDto toDto(Compilation compilation, long view) {
+    public CompilationDto toDto(Compilation compilation, Long view) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
         compilationDto.setPinned(compilation.getPinned() != null && compilation.getPinned());

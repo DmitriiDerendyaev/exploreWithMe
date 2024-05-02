@@ -10,11 +10,11 @@ import java.util.List;
 public interface CompilationService {
     CompilationDto addCompilationAdmin(NewCompilationDto newCompilationDto);
 
-    void deleteCompilationAdmin(long compilationId);
+    void deleteCompilationAdmin(Long compilationId);
 
-    CompilationDto updateCompilationAdmin(long compilationId, UpdateCompilationRequest updateCompilationRequest);
+    CompilationDto updateCompilationAdmin(Long compilationId, UpdateCompilationRequest updateCompilationRequest);
 
     List<CompilationDto> findCompilationsPublic(Boolean pinned, Pageable pageable);
 
-    CompilationDto findCompilationPublic(long compilationId);
+    CompilationDto findCompilationPublic(Long compilationId);
 }

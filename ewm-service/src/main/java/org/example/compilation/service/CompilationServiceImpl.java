@@ -63,7 +63,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void deleteCompilationAdmin(long compilationId) {
+    public void deleteCompilationAdmin(Long compilationId) {
         if (compilationRepository.existsById(compilationId)) {
             compilationRepository.deleteById(compilationId);
             log.info(String.format("Compilation with id=%d not found", compilationId));
@@ -72,7 +72,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public CompilationDto updateCompilationAdmin(long compilationId, UpdateCompilationRequest updateCompilationRequest) {
+    public CompilationDto updateCompilationAdmin(Long compilationId, UpdateCompilationRequest updateCompilationRequest) {
         Compilation compilation = getCompilationOrThrow(compilationId);
 
         if (updateCompilationRequest.getEvents() != null && !updateCompilationRequest.getEvents().isEmpty()) {
@@ -110,26 +110,26 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto findCompilationPublic(long compilationId) {
+    public CompilationDto findCompilationPublic(Long compilationId) {
         Compilation compilation = getCompilationOrThrow(compilationId);
         return compilationMapper.toDto(compilation, getHitsEvent(compilationId,
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true));
     }
 
-    private Compilation getCompilationOrThrow(long compilationId) {
+    private Compilation getCompilationOrThrow(Long compilationId) {
         return compilationRepository.findById(compilationId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Compilation with id=%d was not found", compilationId)));
     }
 
-    private Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
+    private Long getHitsEvent(Long eventId, String start, String end, Boolean unique) {
 
         List<String> uris = new ArrayList<>();
         uris.add("/events/" + eventId);
 
         List<StatsDtoOutput> output = client.getStats(start, end, uris, unique);
 
-        long view = 0L;
+        Long view = 0L;
 
         if (!output.isEmpty()) {
             view = output.get(0).getHits();

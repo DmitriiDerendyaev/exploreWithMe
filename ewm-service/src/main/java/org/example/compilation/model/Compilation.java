@@ -15,7 +15,7 @@ public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "compilation_id")
-    private long id;
+    private Long id;
 
     @ManyToMany
     @JoinTable(name = "compilation_event",
