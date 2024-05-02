@@ -154,7 +154,60 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> getEventsAdmin(EventAdminParam eventAdminParam) {
-        return null;
+        Specification<Event> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (eventAdminParam.getUsers() != null) {
+                CriteriaBuilder.In<Long> usersInClause = criteriaBuilder.in(root.get("initiator"));
+                for (Long user : eventAdminParam.getUsers()) {
+                    usersInClause.value(user);
+                }
+                predicates.add(usersInClause);
+            }
+
+            if (eventAdminParam.getStates() != null) {
+                EventState eventState;
+                List<EventState> eventStates = new ArrayList<>();
+                try {
+                    for (String state : eventAdminParam.getStates()) {
+                        eventState = EventState.valueOf(state);
+                        eventStates.add(eventState);
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidRequestException("Unknown parameter of state");
+                }
+                CriteriaBuilder.In<EventState> statesInClause = criteriaBuilder.in(root.get("state"));
+                for (EventState st : eventStates) {
+                    statesInClause.value(st);
+                }
+                predicates.add(statesInClause);
+            }
+
+            if (eventAdminParam.getCategories() != null) {
+                CriteriaBuilder.In<Long> categoriesInClause = criteriaBuilder.in(root.get("category"));
+                for (Long category : eventAdminParam.getCategories()) {
+                    categoriesInClause.value(category);
+                }
+                predicates.add(categoriesInClause);
+            }
+
+            if (eventAdminParam.getRangeStart() != null) {
+                predicates.add(criteriaBuilder.greaterThan(root.get("eventDate"), eventAdminParam.getRangeStart()));
+            }
+
+            if (eventAdminParam.getRangeEnd() != null) {
+                predicates.add(criteriaBuilder.lessThan(root.get("eventDate"), eventAdminParam.getRangeEnd()));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        };
+        PageRequest pageable = PageRequest.of(eventAdminParam.getFrom() / eventAdminParam.getSize(), eventAdminParam.getSize(), Sort.by("id"));
+        List<Event> events = eventRepository.findAll(specification, pageable).getContent();
+
+        return events.stream().map(e -> eventMapper.toFull(e, getHitsEvent(e.getId(),
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                .collect(Collectors.toList());
     }
 
     @Override
