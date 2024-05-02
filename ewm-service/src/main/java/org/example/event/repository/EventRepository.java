@@ -12,15 +12,15 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
 
-    List<Event> findAllByInitiatorId(long userId, Pageable pageable);
+    List<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 
-    Event findByInitiatorIdAndId(long userId, long eventId);
+    Event findByInitiatorIdAndId(Long userId, Long eventId);
 
     List<Event> findByIdIn(List<Long> ids);
 
-    Event findAllByCategoryId(long catId);
+    Event findAllByCategoryId(Long catId);
 
     List<Event> findAllByIdIn(List<Long> ids);
 
-    Optional<Event> findByIdAndState(long id, EventState state);
+    Optional<Event> findByIdAndState(Long id, EventState state);
 }

@@ -29,13 +29,13 @@ public class EventController {
 
     @PostMapping("/users/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto addEventPrivate(@PathVariable long userId, @Valid @RequestBody NewEventDto newEventDto) {
+    public EventFullDto addEventPrivate(@PathVariable Long userId, @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.addEventPrivate(userId, newEventDto);
     }
 
     @GetMapping("/users/{userId}/events")
     @ResponseStatus(HttpStatus.OK)
-    public List<EventShortDto> getEventPrivate(@PathVariable long userId,
+    public List<EventShortDto> getEventPrivate(@PathVariable Long userId,
                                                @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
                                                @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         return eventService.getEventPrivate(userId, PageRequest.of(from / size, size));
@@ -43,29 +43,29 @@ public class EventController {
 
     @GetMapping("/users/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventByIdPrivate(@PathVariable long userId,
-                                            @PathVariable long eventId) {
+    public EventFullDto getEventByIdPrivate(@PathVariable Long userId,
+                                            @PathVariable Long eventId) {
         return eventService.getEventByIdPrivate(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEventPrivate(@PathVariable long userId, @PathVariable long eventId,
+    public EventFullDto updateEventPrivate(@PathVariable Long userId, @PathVariable Long eventId,
                                            @Valid @RequestBody UpdateEventUserRequest updateEvent) {
         return eventService.updateEventPrivate(userId, eventId, updateEvent);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public List<ParticipationRequestDto> getRequestsUserToEventPrivate(@PathVariable long userId,
-                                                                       @PathVariable long eventId) {
+    public List<ParticipationRequestDto> getRequestsUserToEventPrivate(@PathVariable Long userId,
+                                                                       @PathVariable Long eventId) {
         return eventService.getRequestsUserToEventPrivate(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable long userId,
-                                                                          @PathVariable long eventId,
+    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable Long userId,
+                                                                          @PathVariable Long eventId,
                                                                           @Valid @RequestBody EventRequestStatusUpdateRequest updateRequests) {
         return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
     }
@@ -93,7 +93,7 @@ public class EventController {
 
     @PatchMapping("/admin/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEventAdmin(@PathVariable long eventId, @Valid @RequestBody UpdateEventAdminRequest updateEventAdmin) {
+    public EventFullDto updateEventAdmin(@PathVariable Long eventId, @Valid @RequestBody UpdateEventAdminRequest updateEventAdmin) {
         return eventService.updateEventAdmin(eventId, updateEventAdmin);
     }
 
@@ -127,7 +127,7 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventByIdPublic(@PathVariable long id, HttpServletRequest request) {
+    public EventFullDto getEventByIdPublic(@PathVariable Long id, HttpServletRequest request) {
         return eventService.getEventByIdPublic(id, request);
     }
 }

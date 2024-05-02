@@ -109,7 +109,7 @@ public class EventServiceImpl implements EventService {
             }
         }
         if (updateEventUserRequest.getCategory() != 0) {
-            long categoryId = updateEventUserRequest.getCategory();
+            Long categoryId = updateEventUserRequest.getCategory();
             Category category = getCategoryOrThrow(categoryId);
             event.setCategory(category);
         }
@@ -384,30 +384,30 @@ public class EventServiceImpl implements EventService {
         return null;
     }
 
-    private Category getCategoryOrThrow(long categoryId) {
+    private Category getCategoryOrThrow(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(
                 () -> new ObjectNotFoundException(
                         String.format("Category with id=%d was not found", categoryId)));
     }
 
-    private Event getEventOrThrow(long eventId) {
+    private Event getEventOrThrow(Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
     }
 
-    private User getUserOrThrow(long userId) {
+    private User getUserOrThrow(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("User with id=%d not found", userId)));
     }
 
-    private Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
+    private Long getHitsEvent(Long eventId, String start, String end, Boolean unique) {
 
         List<String> uris = new ArrayList<>();
         uris.add("/events/" + eventId);
 
         List<StatsDtoOutput> output = client.getStats(start, end, uris, unique);
 
-        long view = 0L;
+        Long view = 0L;
 
         if (!output.isEmpty()) {
             view = output.get(0).getHits();
