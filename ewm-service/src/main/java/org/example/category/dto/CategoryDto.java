@@ -1,9 +1,6 @@
 package org.example.category.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -11,7 +8,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CategoryDto {
     private Long id;
 
