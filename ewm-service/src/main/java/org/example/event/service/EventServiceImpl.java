@@ -391,7 +391,7 @@ public class EventServiceImpl implements EventService {
             getUserOrThrow(userId);
             Event event = getEventOrThrow(eventId);
 
-            if (event.getInitiator().getId() != userId) {
+            if (!event.getInitiator().getId().equals(userId)) {
                 throw new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId));
             }
             for (Request request : requests) {
