@@ -2,15 +2,12 @@ version: '3.1'
 services:
   stats-server:
     build:
-      context: stats/stats-server
+      context: ./stats/stats-server
       dockerfile: Dockerfile
-    image: stats-image
-#    build: stats/stats-server
-#    container_name: stats-container
-    # Вадим, подскажи, пожалуйста: если я через билд просто указываю на расположение докерфайла и имя контейнера он падает, если указать полностью имя образа(который я заранее собрал), то композ работает
+    #image: stats-image
+    container_name: stats-container
     ports:
       - "9090:9090"
-
     depends_on:
       - stats-db
     environment:
@@ -32,9 +29,8 @@ services:
     build:
       context: ./ewm-service
       dockerfile: Dockerfile
-    image: ewm-image
-#    build: ./ewm-service
-#    container_name: ewm-image
+    #image: ewm-image
+    container_name: ewm-image
     ports:
       - "8080:8080"
     depends_on:
