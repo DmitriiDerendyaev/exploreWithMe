@@ -14,8 +14,6 @@ import org.example.request.model.RequestStatus;
 import org.example.request.repository.RequestRepository;
 import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +31,7 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RequestMapper requestMapper;
+
     @Override
     public ParticipationRequestDto addRequestPrivate(Long userId, Long eventId) {
         Request request = new Request();
@@ -72,7 +71,8 @@ public class RequestServiceImpl implements RequestService {
         getUserOrThrow(userId);
         log.info("Get user requests to event");
         return requestRepository.findAllByRequesterId(userId).stream()
-                .map(requestMapper::toDto).collect(Collectors.toList());    }
+                .map(requestMapper::toDto).collect(Collectors.toList());
+    }
 
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {

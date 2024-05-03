@@ -2,7 +2,6 @@ package org.example.user.service;
 
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
-import org.example.user.model.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

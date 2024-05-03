@@ -1,7 +1,6 @@
 package org.example.event.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.StatsClient;
 import org.example.event.dto.*;
 import org.example.event.service.EventService;
 import org.example.request.dto.EventRequestStatusUpdateRequest;

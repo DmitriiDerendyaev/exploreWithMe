@@ -22,9 +22,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+
     @Override
     public CategoryDto addCategoryAdmin(NewCategoryDto newCategoryDto) {
-        if(categoryRepository.existsByName(newCategoryDto.getName())) {
+        if (categoryRepository.existsByName(newCategoryDto.getName())) {
             throw new ObjectAlreadyExistException("Category with name: {} already exist");
         }
         log.info("Add new category: {}", newCategoryDto.toString());
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryAdmin(Long categoryId) {
-        if(!categoryRepository.existsById(categoryId)) {
+        if (!categoryRepository.existsById(categoryId)) {
             throw new ObjectNotFoundException(String.format("Category with ID: %d does not exist", categoryId));
         }
         // TODO: добавить проверку на удаление с events

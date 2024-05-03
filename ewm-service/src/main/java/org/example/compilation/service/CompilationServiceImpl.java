@@ -14,8 +14,6 @@ import org.example.compilation.repository.CompilationRepository;
 import org.example.event.model.Event;
 import org.example.event.repository.EventRepository;
 import org.example.exceprtion.ObjectNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

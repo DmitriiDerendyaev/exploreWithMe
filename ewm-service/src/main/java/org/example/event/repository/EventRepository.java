@@ -1,7 +1,6 @@
 package org.example.event.repository;
 
 import org.example.event.model.Event;
-import org.example.event.model.EventSort;
 import org.example.event.model.EventState;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
