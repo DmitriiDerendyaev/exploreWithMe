@@ -20,6 +20,8 @@ import org.example.request.dto.EventRequestStatusUpdateRequest;
 import org.example.request.dto.EventRequestStatusUpdateResult;
 import org.example.request.dto.ParticipationRequestDto;
 import org.example.request.mapper.RequestMapper;
+import org.example.request.model.Request;
+import org.example.request.model.RequestStatus;
 import org.example.request.repository.RequestRepository;
 import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
@@ -380,8 +382,64 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(Long userId, Long eventId, EventRequestStatusUpdateRequest updateRequests) {
-        return null;
+    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(Long userId, Long eventId, EventRequestStatusUpdateRequest updateRequest) {
+            EventRequestStatusUpdateResult updateResult;
+            List<Request> confirmedRequests = new ArrayList<>();
+            List<Request> rejectedRequests = new ArrayList<>();
+            int countRequests = updateRequest.getRequestIds().size();
+            List<Request> requests = requestRepository.findByIdIn(updateRequest.getRequestIds());
+            getUserOrThrow(userId);
+            Event event = getEventOrThrow(eventId);
+
+            if (event.getInitiator().getId() != userId) {
+                throw new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId));
+            }
+            for (Request request : requests) {
+                if (!request.getStatus().equals(RequestStatus.PENDING)) {
+                    throw new RulesViolationException("Request status is not PENDING");
+                }
+            }
+            if (updateRequest.getStatus() != null) {
+                switch (updateRequest.getStatus()) {
+                    case "CONFIRMED":
+                        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()
+                                || event.getParticipantLimit() > event.getConfirmedRequests() + countRequests) {
+                            requests.forEach(request -> request.setStatus(RequestStatus.CONFIRMED));
+                            event.setConfirmedRequests(event.getConfirmedRequests() + countRequests);
+                            confirmedRequests.addAll(requests);
+
+                        } else if (event.getParticipantLimit() <= event.getConfirmedRequests()) {
+                            throw new RulesViolationException("Participant Limit");
+                        } else {
+                            for (Request request : requests) {
+                                if (event.getParticipantLimit() > event.getConfirmedRequests()) {
+                                    request.setStatus(RequestStatus.CONFIRMED);
+                                    event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                                    confirmedRequests.add(request);
+                                } else {
+                                    request.setStatus(RequestStatus.REJECTED);
+                                    rejectedRequests.add(request);
+                                }
+                            }
+                        }
+                        break;
+                    case "REJECTED":
+                        requests.forEach(request -> request.setStatus(RequestStatus.REJECTED));
+                        rejectedRequests.addAll(requests);
+                }
+            }
+            eventRepository.save(event);
+            requestRepository.saveAll(requests);
+
+            List<ParticipationRequestDto> confirmed = confirmedRequests.stream()
+                    .map(requestMapper::toDto)
+                    .collect(Collectors.toList());
+            List<ParticipationRequestDto> rejected = rejectedRequests.stream()
+                    .map(requestMapper::toDto)
+                    .collect(Collectors.toList());
+            updateResult = new EventRequestStatusUpdateResult(confirmed, rejected);
+            log.info(String.format("Update states (%s) of event's (id=%d) requests.", updateRequest.getStatus(), eventId));
+            return updateResult;
     }
 
     private Category getCategoryOrThrow(Long categoryId) {
