@@ -17,21 +17,21 @@ public class RequestController {
 
     @PostMapping("/users/{userId}/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addRequestPrivate(@PathVariable long userId,
-                                                     @RequestParam long eventId) {
+    public ParticipationRequestDto addRequestPrivate(@PathVariable Long userId,
+                                                     @RequestParam Long eventId) {
         return requestService.addRequestPrivate(userId, eventId);
     }
 
     @GetMapping("/users/{userId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public List<ParticipationRequestDto> getRequestsPrivate(@PathVariable long userId) {
+    public List<ParticipationRequestDto> getRequestsPrivate(@PathVariable Long userId) {
         return requestService.getRequestsPrivate(userId);
     }
 
     @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
     @ResponseStatus(HttpStatus.OK)
-    public ParticipationRequestDto cancelRequest(@PathVariable long userId,
-                                                 @PathVariable long requestId) {
+    public ParticipationRequestDto cancelRequest(@PathVariable Long userId,
+                                                 @PathVariable Long requestId) {
         return requestService.cancelRequest(userId, requestId);
 
     }
