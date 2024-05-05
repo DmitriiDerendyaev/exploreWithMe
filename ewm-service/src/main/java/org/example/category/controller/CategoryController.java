@@ -6,6 +6,7 @@ import org.example.category.dto.NewCategoryDto;
 import org.example.category.service.CategoryService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -14,13 +15,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @PostMapping("/admin/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategoryAdmin(@RequestBody NewCategoryDto newCategoryDto) {
+    public CategoryDto addCategoryAdmin(@Valid @RequestBody NewCategoryDto newCategoryDto) {
         return categoryService.addCategoryAdmin(newCategoryDto);
     }
 
@@ -32,7 +34,7 @@ public class CategoryController {
 
     @PatchMapping("/admin/categories/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto updateCategoryAdmin(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
+    public CategoryDto updateCategoryAdmin(@Valid @PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
         categoryDto.setId(id);
         return categoryService.updateCategoryAdmin(categoryDto);
     }

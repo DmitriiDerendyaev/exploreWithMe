@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.event.model.Location;
 
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class UpdateEventUserRequest {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private Integer participantLimit;
 
     private Boolean requestModeration;

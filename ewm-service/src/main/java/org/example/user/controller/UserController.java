@@ -6,21 +6,24 @@ import org.example.user.dto.UserDto;
 import org.example.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUserAdmin(@RequestBody NewUserRequest newUserRequest) {
+    public UserDto addUserAdmin(@Valid @RequestBody NewUserRequest newUserRequest) {
         return userService.addUserAdmin(newUserRequest);
     }
 

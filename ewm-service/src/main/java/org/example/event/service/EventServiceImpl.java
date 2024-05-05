@@ -110,7 +110,7 @@ public class EventServiceImpl implements EventService {
                 event.setEventDate(updateEventUserRequest.getEventDate());
             }
         }
-        if (updateEventUserRequest.getCategory() != 0) {
+        if (updateEventUserRequest.getCategory() != null) {
             Long categoryId = updateEventUserRequest.getCategory();
             Category category = getCategoryOrThrow(categoryId);
             event.setCategory(category);
@@ -238,7 +238,7 @@ public class EventServiceImpl implements EventService {
         if (updateEventAdmin.getAnnotation() != null) {
             event.setAnnotation(updateEventAdmin.getAnnotation());
         }
-        if (updateEventAdmin.getCategory() != 0) {
+        if (updateEventAdmin.getCategory() != null && updateEventAdmin.getCategory() != 0) {
             Category category = getCategoryOrThrow(updateEventAdmin.getCategory());
             event.setCategory(category);
         }

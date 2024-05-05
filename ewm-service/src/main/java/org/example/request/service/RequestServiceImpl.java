@@ -33,6 +33,7 @@ public class RequestServiceImpl implements RequestService {
     private final RequestMapper requestMapper;
 
     @Override
+    @Transactional
     public ParticipationRequestDto addRequestPrivate(Long userId, Long eventId) {
         Request request = new Request();
         Event event = eventRepository.findById(eventId).orElseThrow(
