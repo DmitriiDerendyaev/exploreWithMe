@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.event.model.Location;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 import static org.example.constant.Constants.DATE_FORMAT;
@@ -16,6 +13,7 @@ import static org.example.constant.Constants.DATE_FORMAT;
 @Getter
 @Setter
 public class NewEventDto {
+    @NotBlank
     @NotNull
     @Size(min = 20, max = 2000)
     private String annotation;
@@ -25,6 +23,7 @@ public class NewEventDto {
     private Long category;
 
     @NotNull
+    @NotBlank
     @Size(min = 20, max = 7000)
     private String description;
 
