@@ -62,4 +62,12 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", e.getMessage(),
                 LocalDateTime.now());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerInternalServerError(final Throwable e) {
+        log.warn("Internal server error: {}", e.getMessage());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error.", e.getMessage(),
+                LocalDateTime.now());
+    }
 }
