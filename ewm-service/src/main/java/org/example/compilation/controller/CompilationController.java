@@ -39,12 +39,20 @@ public class CompilationController {
         return compilationService.updateCompilationAdmin(compId, updateCompilationRequest);
     }
 
+//    @GetMapping("/compilations")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<CompilationDto> findCompilationsPublicDemo(@RequestParam(required = false, defaultValue = "false") String pinned,
+//                                                       @RequestParam(required = false, defaultValue = "0") Integer from,
+//                                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
+//        return compilationService.findCompilationsPublic(Boolean.valueOf(pinned), PageRequest.of(from / size, size));
+//    }
+
     @GetMapping("/compilations")
     @ResponseStatus(HttpStatus.OK)
-    public List<CompilationDto> findCompilationsPublic(@RequestParam(required = false, defaultValue = "false") String pinned,
-                                                       @RequestParam(required = false, defaultValue = "0") Integer from,
-                                                       @RequestParam(required = false, defaultValue = "10") Integer size) {
-        return compilationService.findCompilationsPublic(Boolean.valueOf(pinned), PageRequest.of(from / size, size));
+    public List<CompilationDto> findCompilationPublic(@RequestParam(defaultValue = "false") String pinned,
+                                                      @RequestParam(defaultValue = "0") Integer from,
+                                                      @RequestParam(defaultValue = "10") Integer size) {
+        return compilationService.findCompilationsPublic(Boolean.valueOf(pinned), PageRequest.of(from/size, size));
     }
 
     @GetMapping("/compilations/{compId}")
