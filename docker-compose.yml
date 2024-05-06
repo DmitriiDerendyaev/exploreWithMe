@@ -3,7 +3,6 @@ services:
   stats-server:
     build:
       context: ./stats/stats-server
-      dockerfile: dockerfile
     image: stats-image
     container_name: stats-container
     ports:
@@ -28,7 +27,6 @@ services:
   ewm-service:
     build:
       context: ./ewm-service
-      dockerfile: dockerfile
     image: ewm-image
     container_name: ewm-container
     ports:
