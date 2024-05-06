@@ -1,4 +1,4 @@
-package org.example.exceprtion;
+package org.example.exception;
 
 public class ObjectNotFoundException extends RuntimeException {
     public ObjectNotFoundException(String message) {

@@ -1,4 +1,4 @@
-package org.example.exceprtion;
+package org.example.exception;
 
 public class ObjectAlreadyExistException extends RuntimeException {
     public ObjectAlreadyExistException(String message) {

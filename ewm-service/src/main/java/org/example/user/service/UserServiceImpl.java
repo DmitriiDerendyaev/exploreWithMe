@@ -2,8 +2,8 @@ package org.example.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.exceprtion.ObjectAlreadyExistException;
-import org.example.exceprtion.ObjectNotFoundException;
+import org.example.exception.ObjectAlreadyExistException;
+import org.example.exception.ObjectNotFoundException;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
 import org.example.user.mapper.UserMapper;
