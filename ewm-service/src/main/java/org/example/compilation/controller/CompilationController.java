@@ -52,7 +52,7 @@ public class CompilationController {
     public List<CompilationDto> findCompilationPublic(@RequestParam(defaultValue = "false") String pinned,
                                                       @RequestParam(defaultValue = "0") Integer from,
                                                       @RequestParam(defaultValue = "10") Integer size) {
-        return compilationService.findCompilationsPublic(Boolean.valueOf(pinned), PageRequest.of(from/size, size));
+        return compilationService.findCompilationsPublic(Boolean.valueOf(pinned), PageRequest.of(from / size, size));
     }
 
     @GetMapping("/compilations/{compId}")
