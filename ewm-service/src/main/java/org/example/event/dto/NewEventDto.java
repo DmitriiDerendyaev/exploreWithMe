@@ -14,7 +14,6 @@ import static org.example.constant.Constants.DATE_FORMAT;
 @Setter
 public class NewEventDto {
     @NotBlank
-    @NotNull
     @Size(min = 20, max = 2000)
     private String annotation;
 
@@ -22,7 +21,6 @@ public class NewEventDto {
     @Positive
     private Long category;
 
-    @NotNull
     @NotBlank
     @Size(min = 20, max = 7000)
     private String description;
