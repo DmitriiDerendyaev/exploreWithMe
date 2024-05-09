@@ -2,15 +2,11 @@ version: '3.1'
 services:
   stats-server:
     build:
-      context: stats/stats-server
-      dockerfile: Dockerfile
+      context: ./stats/stats-server
     image: stats-image
-#    build: stats/stats-server
-#    container_name: stats-container
-    # Вадим, подскажи, пожалуйста: если я через билд просто указываю на расположение докерфайла и имя контейнера он падает, если указать полностью имя образа(который я заранее собрал), то композ работает
+    container_name: stats-container
     ports:
       - "9090:9090"
-
     depends_on:
       - stats-db
     environment:
@@ -31,17 +27,15 @@ services:
   ewm-service:
     build:
       context: ./ewm-service
-      dockerfile: Dockerfile
     image: ewm-image
-#    build: ./ewm-service
-#    container_name: ewm-image
+    container_name: ewm-container
     ports:
       - "8080:8080"
     depends_on:
       - ewm-db
       - stats-server
     environment:
-      - STATS_SERVER_URL=http://stats-server:9090
+      - stats.uri=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
       - SPRING_DATASOURCE_POSTGRES_USER=postgres
       - SPRING_DATASOURCE_POSTGRES_PASSWORD=postgres
