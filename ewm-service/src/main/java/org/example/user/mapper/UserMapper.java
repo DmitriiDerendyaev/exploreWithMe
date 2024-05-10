@@ -3,8 +3,12 @@ package org.example.user.mapper;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
 import org.example.user.dto.UserShortDto;
+import org.example.user.dto.UserWithSubscribers;
 import org.example.user.model.User;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -29,5 +33,16 @@ public class UserMapper {
         userShortDto.setId(user.getId());
         userShortDto.setName(user.getName());
         return userShortDto;
+    }
+
+    public UserWithSubscribers toUserDtoWithSubscribers(User user) {
+        return UserWithSubscribers.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .subscribers(user.getSubscriptions().isEmpty() ? new ArrayList<>() :
+                        user.getSubscriptions().stream()
+                                .map(this::toDto)
+                                .collect(Collectors.toList())).build();
     }
 }
