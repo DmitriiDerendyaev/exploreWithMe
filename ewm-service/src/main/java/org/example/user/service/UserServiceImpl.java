@@ -6,6 +6,7 @@ import org.example.exception.ObjectAlreadyExistException;
 import org.example.exception.ObjectNotFoundException;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
+import org.example.user.dto.UserWithSubscribers;
 import org.example.user.mapper.UserMapper;
 import org.example.user.repository.UserRepository;
 import org.springframework.data.domain.Pageable;
@@ -51,5 +52,20 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
         log.info("Delete user by ID: {}", id);
+    }
+
+    @Override
+    public UserWithSubscribers addSubscriber(Long userId, Long authorId) {
+        return null;
+    }
+
+    @Override
+    public void deleteSubscriber(Long userId, Long authorId) {
+
+    }
+
+    @Override
+    public UserWithSubscribers getUserWithSubscribers(Long userId, Pageable pageable) {
+        return null;
     }
 }

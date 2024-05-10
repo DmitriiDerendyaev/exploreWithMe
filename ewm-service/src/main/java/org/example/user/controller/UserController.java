@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
 import org.example.user.service.UserService;
+import org.example.user.dto.UserWithSubscribers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -40,4 +41,25 @@ public class UserController {
     public void deleteUserAdmin(@PathVariable Long id) {
         userService.deleteUserAdmin(id);
     }
+
+    @PostMapping(value = "/users/{userId}/subscriptions/{authorId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserWithSubscribers addSubscriber(@PathVariable long userId, @PathVariable long authorId) {
+        return userService.addSubscriber(userId, authorId);
+    }
+
+    @DeleteMapping(value = "/users/{userId}/subscriptions/{authorId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSubscriber(@PathVariable long userId, @PathVariable long authorId) {
+        userService.deleteSubscriber(userId, authorId);
+    }
+
+    @GetMapping("/users/{userId}/subscriptions")
+    @ResponseStatus(HttpStatus.OK)
+    public UserWithSubscribers getUserWithSubscribers(@PathVariable long userId,
+                                                      @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                                      @RequestParam(defaultValue = "10") @Min(1) Integer size) {
+        return userService.getUserWithSubscribers(userId, PageRequest.of(from / size, size));
+    }
+
 }
