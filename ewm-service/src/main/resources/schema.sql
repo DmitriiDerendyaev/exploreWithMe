@@ -3,7 +3,8 @@ DROP TABLE IF EXISTS requests;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS compilations;
 DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS subscriptions;
 CREATE TABLE IF NOT EXISTS users
 (
     user_id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -67,11 +68,12 @@ create TABLE IF NOT EXISTS compilation_event
     FOREIGN KEY (compilation_id) REFERENCES compilations (compilation_id)
 );
 
-CREATE TABLE IF NOT EXISTS users_authors
+-- Создаем таблицу подписок
+CREATE TABLE subscriptions
 (
-    user_id   BIGINT NOT NULL,
-    author_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, author_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (author_id) REFERENCES users (user_id)
+    subscriber_id    BIGINT NOT NULL,
+    subscribed_to_id BIGINT NOT NULL,
+    FOREIGN KEY (subscriber_id) REFERENCES users (user_id),
+    FOREIGN KEY (subscribed_to_id) REFERENCES users (user_id),
+    PRIMARY KEY (subscriber_id, subscribed_to_id)
 );
