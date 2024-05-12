@@ -25,11 +25,4 @@ public class User {
     private String email;
     @Column(name = "user_name")
     private String name;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_authors",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    @Fetch(FetchMode.SUBSELECT)
-    private List<User> subscriptions;
 }

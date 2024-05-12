@@ -3,11 +3,11 @@ package org.example.user.mapper;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
 import org.example.user.dto.UserShortDto;
-import org.example.user.dto.UserWithSubscribers;
+import org.example.subscription.dto.UserWithSubscribers;
 import org.example.user.model.User;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,14 +35,11 @@ public class UserMapper {
         return userShortDto;
     }
 
-    public UserWithSubscribers toUserDtoWithSubscribers(User user) {
+    public UserWithSubscribers toUserDtoWithSubscribers(User user, List<User> subscribersList) {
         return UserWithSubscribers.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .subscribers(user.getSubscriptions().isEmpty() ? new ArrayList<>() :
-                        user.getSubscriptions().stream()
-                                .map(this::toDto)
-                                .collect(Collectors.toList())).build();
+                .subscribers(subscribersList.stream().map(this::toDto).collect(Collectors.toList())).build();
     }
 }

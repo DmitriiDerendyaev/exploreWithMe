@@ -1,8 +1,9 @@
-package org.example.user.dto;
+package org.example.subscription.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.user.dto.UserDto;
 
 import java.util.List;
 

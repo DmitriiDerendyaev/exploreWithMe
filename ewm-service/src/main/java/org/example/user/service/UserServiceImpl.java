@@ -5,16 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.ObjectAlreadyExistException;
 import org.example.exception.ObjectNotFoundException;
 import org.example.exception.RulesViolationException;
+import org.example.subscription.model.Subscription;
+import org.example.subscription.repository.SubscriptionRepository;
 import org.example.user.dto.NewUserRequest;
 import org.example.user.dto.UserDto;
-import org.example.user.dto.UserWithSubscribers;
+import org.example.subscription.dto.UserWithSubscribers;
 import org.example.user.mapper.UserMapper;
 import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final SubscriptionRepository subscriptionRepository;
 
     @Override
     public UserDto addUserAdmin(NewUserRequest newUserRequest) {
@@ -58,44 +64,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public UserWithSubscribers addSubscriber(Long userId, Long authorId) {
         if (userId.equals(authorId)) {
             throw new RulesViolationException("The user cannot subscribe to himself");
         }
         User user = getUserOrThrow(userId);
-        User subscriber = getUserOrThrow(authorId);
-        if (user.getSubscriptions().contains(subscriber)) {
+        User author = getUserOrThrow(authorId);
+
+        if (subscriptionRepository.existsBySubscriberAndSubscribedTo(user, author)) {
             throw new RulesViolationException("You subscribe on this user");
         }
-        user.getSubscriptions().add(subscriber);
-        user = userRepository.save(user);
-        System.out.println(user);
-        log.info("Add user subscriber with id={}", authorId);
-        return userMapper.toUserDtoWithSubscribers(user);
+
+        Subscription subscription = new Subscription();
+        subscription.setSubscriber(user);
+        subscription.setSubscribedTo(author);
+        subscriptionRepository.save(subscription);
+        log.info("User with id={} subscribed on user with id={}", userId, authorId);
+        return userMapper.toUserDtoWithSubscribers(user, Collections.singletonList(author));
     }
 
     @Override
     @Transactional
     public void deleteSubscriber(Long userId, Long authorId) {
         if (userId.equals(authorId)) {
-            throw new RulesViolationException("User can't subscribe yourself");
+            throw new RulesViolationException("User can't unsubscribe yourself");
         }
-        User user = getUserOrThrow(userId);
-        User subscriber = getUserOrThrow(authorId);
-        if (!user.getSubscriptions().contains(subscriber)) {
-            throw new ObjectNotFoundException("User with id=" + userId + "not subscribe on user id=" + authorId);
+
+        Subscription subscription = subscriptionRepository.findBySubscriberIdAndSubscribedToId(userId, authorId);
+
+        if (subscription == null) {
+            throw new ObjectNotFoundException("Subscription not found");
         }
-        user.getSubscriptions().remove(subscriber);
-        log.info("User id={} unsubscribed from user id={}", userId, authorId);
-        userRepository.save(user);
+
+        subscriptionRepository.delete(subscription);
+        log.info("User with id={} unsubscribed from user with id={}", userId, authorId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserWithSubscribers getUserWithSubscribers(Long userId, Pageable pageable) {
         User user = getUserOrThrow(userId);
-        return userMapper.toUserDtoWithSubscribers(user);
+        List<Subscription> subscriptions = subscriptionRepository.findBySubscriberId(userId, pageable);
+        List<User> subscribers = subscriptions.stream().map(Subscription::getSubscribedTo).collect(Collectors.toList());
+        return userMapper.toUserDtoWithSubscribers(user, subscribers);
     }
 
     private User getUserOrThrow(long userId) {
