@@ -7,7 +7,6 @@ import org.example.request.dto.EventRequestStatusUpdateRequest;
 import org.example.request.dto.EventRequestStatusUpdateResult;
 import org.example.request.dto.ParticipationRequestDto;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -138,7 +137,7 @@ public class EventController {
                                                @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                                @RequestParam(defaultValue = "10") @Min(1) Integer size) {
 
-        return eventService.findEventsByUser(userId, authorId, PageRequest.of(from / size, size, Sort.by("eventDate").descending()));
+        return eventService.findEventsByUser(userId, authorId, PageRequest.of(from / size, size));
     }
 
     @GetMapping("/users/subscriptions/{userId}/events")
@@ -146,6 +145,6 @@ public class EventController {
     public List<EventShortDto> findEventsByAllUsers(@PathVariable Long userId,
                                                     @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                                     @RequestParam(defaultValue = "10") @Min(1) Integer size) {
-        return eventService.findEventsByAllUsers(userId, PageRequest.of(from / size, size, Sort.by("eventDate").descending()));
+        return eventService.findEventsByAllUsers(userId, PageRequest.of(from / size, size));
     }
 }

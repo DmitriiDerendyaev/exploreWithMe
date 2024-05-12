@@ -13,12 +13,10 @@ import org.example.subscription.dto.UserWithSubscribers;
 import org.example.user.mapper.UserMapper;
 import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
