@@ -1,6 +1,8 @@
 package org.example.user.model;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -24,9 +26,10 @@ public class User {
     @Column(name = "user_name")
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_authors",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @Fetch(FetchMode.SUBSELECT)
     private List<User> subscriptions;
 }

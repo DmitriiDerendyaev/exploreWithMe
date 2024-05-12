@@ -13,6 +13,7 @@ import org.example.user.model.User;
 import org.example.user.repository.UserRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserWithSubscribers addSubscriber(Long userId, Long authorId) {
         if (userId.equals(authorId)) {
             throw new RulesViolationException("The user cannot subscribe to himself");
@@ -74,6 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteSubscriber(Long userId, Long authorId) {
         if (userId.equals(authorId)) {
             throw new RulesViolationException("User can't subscribe yourself");
@@ -89,6 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserWithSubscribers getUserWithSubscribers(Long userId, Pageable pageable) {
         User user = getUserOrThrow(userId);
         return userMapper.toUserDtoWithSubscribers(user);
