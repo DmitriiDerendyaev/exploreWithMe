@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface UserService {
 
-    public UserDto addUserAdmin(NewUserRequest newUserRequest);
+    UserDto addUserAdmin(NewUserRequest newUserRequest);
 
-    public List<UserDto> getUsersAdmin(List<Long> ids, Pageable pageable);
+    List<UserDto> getUsersAdmin(List<Long> ids, Pageable pageable);
 
-    public void deleteUserAdmin(@PathVariable Long id);
+    void deleteUserAdmin(@PathVariable Long id);
 
     UserWithSubscribers addSubscriber(Long userId, Long authorId);
 

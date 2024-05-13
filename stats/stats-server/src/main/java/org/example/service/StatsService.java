@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface StatsService {
 
-    public StatsDto saveStats(StatsDto statsDto);
+    StatsDto saveStats(StatsDto statsDto);
 
-    public List<StatsDtoOutput> getStats(String start,
+    List<StatsDtoOutput> getStats(String start,
                                          String end,
                                          List<String> uris,
                                          Boolean unique);
