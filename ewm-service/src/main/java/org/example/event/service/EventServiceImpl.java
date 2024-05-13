@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.StatsClient;
 import org.example.StatsDto;
-import org.example.StatsDtoOutput;
 import org.example.category.model.Category;
 import org.example.category.repository.CategoryRepository;
 import org.example.event.dto.*;
@@ -46,6 +45,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.example.constant.Constants.DATE_FORMAT;
+import static org.example.constant.HitsEventUtil.getHitsEvent;
 
 @Slf4j
 @Service
@@ -76,7 +76,7 @@ public class EventServiceImpl implements EventService {
         log.info("Add new event");
         return eventMapper.toFull(event, getHitsEvent(event.getId(),
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
                 .map(e -> eventMapper.toShort(e, getHitsEvent(e.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client)))
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService {
         log.info("Get information about event for owner");
         return eventMapper.toFull(event, getHitsEvent(event.getId(),
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client));
     }
 
     @Override
@@ -133,18 +133,7 @@ public class EventServiceImpl implements EventService {
                 event.setLon(updateEventUserRequest.getLocation().getLon());
             }
         }
-        if (updateEventUserRequest.getPaid() != null) {
-            event.setPaid(updateEventUserRequest.getPaid());
-        }
-        if (updateEventUserRequest.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateEventUserRequest.getParticipantLimit());
-        }
-        if (updateEventUserRequest.getRequestModeration() != null) {
-            event.setRequestModeration(updateEventUserRequest.getRequestModeration());
-        }
-        if (updateEventUserRequest.getTitle() != null) {
-            event.setTitle(updateEventUserRequest.getTitle());
-        }
+        updateEventParam(event, updateEventUserRequest.getPaid(), updateEventUserRequest.getParticipantLimit(), updateEventUserRequest.getRequestModeration(), updateEventUserRequest.getTitle());
         if (updateEventUserRequest.getStateAction() != null) {
             if (updateEventUserRequest.getStateAction().equals("SEND_TO_REVIEW")) {
                 event.setState(EventState.PENDING);
@@ -212,7 +201,7 @@ public class EventServiceImpl implements EventService {
 
         return events.stream().map(e -> eventMapper.toFull(e, getHitsEvent(e.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client)))
                 .collect(Collectors.toList());
     }
 
@@ -260,23 +249,27 @@ public class EventServiceImpl implements EventService {
             event.setLon(updateEventAdmin.getLocation().getLon());
             event.setLat(updateEventAdmin.getLocation().getLat());
         }
-        if (updateEventAdmin.getPaid() != null) {
-            event.setPaid(updateEventAdmin.getPaid());
-        }
-        if (updateEventAdmin.getParticipantLimit() != null) {
-            event.setParticipantLimit(updateEventAdmin.getParticipantLimit());
-        }
-        if (updateEventAdmin.getRequestModeration() != null) {
-            event.setRequestModeration(updateEventAdmin.getRequestModeration());
-        }
-        if (updateEventAdmin.getTitle() != null) {
-            event.setTitle(updateEventAdmin.getTitle());
-        }
+        updateEventParam(event, updateEventAdmin.getPaid(), updateEventAdmin.getParticipantLimit(), updateEventAdmin.getRequestModeration(), updateEventAdmin.getTitle());
         event.setId(eventId);
         eventRepository.save(event);
         return eventMapper.toFull(event, getHitsEvent(eventId,
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client));
+    }
+
+    private void updateEventParam(Event event, Boolean paid, Integer participantLimit, Boolean requestModeration, String title) {
+        if (paid != null) {
+            event.setPaid(paid);
+        }
+        if (participantLimit != null) {
+            event.setParticipantLimit(participantLimit);
+        }
+        if (requestModeration != null) {
+            event.setRequestModeration(requestModeration);
+        }
+        if (title != null) {
+            event.setTitle(title);
+        }
     }
 
     @Override
@@ -353,7 +346,7 @@ public class EventServiceImpl implements EventService {
         return allEvents.stream()
                 .map(r -> eventMapper.toShort(r, getHitsEvent(r.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client)))
                 .collect(Collectors.toList());
     }
 
@@ -370,7 +363,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Event with id=%d was not found", id)));
 
         Long view = getHitsEvent(id, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true);
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true, client);
 
         return eventMapper.toFull(event, view);
     }
@@ -461,7 +454,7 @@ public class EventServiceImpl implements EventService {
         log.info("Events found for user with id={} from subscriber with id={}", userId, authorId);
         return events.stream().map(e -> eventMapper.toFull(e, getHitsEvent(e.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client)))
                 .collect(Collectors.toList());
     }
 
@@ -479,7 +472,7 @@ public class EventServiceImpl implements EventService {
         log.info("Найдены все события от пользователей для подписчика с id={}", userId);
         return events.stream().map(e -> eventMapper.toShort(e, getHitsEvent(e.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false, client)))
                 .collect(Collectors.toList());
     }
 
@@ -499,18 +492,4 @@ public class EventServiceImpl implements EventService {
                 () -> new ObjectNotFoundException(String.format("User with id=%d not found", userId)));
     }
 
-    private Long getHitsEvent(Long eventId, String start, String end, Boolean unique) {
-
-        List<String> uris = new ArrayList<>();
-        uris.add("/events/" + eventId);
-
-        List<StatsDtoOutput> output = client.getStats(start, end, uris, unique);
-
-        Long view = 0L;
-
-        if (!output.isEmpty()) {
-            view = output.get(0).getHits();
-        }
-        return view;
-    }
 }

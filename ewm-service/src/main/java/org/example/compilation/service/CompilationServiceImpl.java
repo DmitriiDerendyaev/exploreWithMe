@@ -4,7 +4,6 @@ package org.example.compilation.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.StatsClient;
-import org.example.StatsDtoOutput;
 import org.example.compilation.dto.CompilationDto;
 import org.example.compilation.dto.NewCompilationDto;
 import org.example.compilation.dto.UpdateCompilationRequest;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.example.constant.Constants.DATE_FORMAT;
+import static org.example.constant.HitsEventUtil.getHitsEvent;
 
 @Slf4j
 @Service
@@ -86,7 +86,7 @@ public class CompilationServiceImpl implements CompilationService {
         }
         compilationRepository.save(compilation);
         Long view = getHitsEvent(compilationId, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true);
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true, client);
         return compilationMapper.toDto(compilation, view);
     }
 
@@ -96,14 +96,14 @@ public class CompilationServiceImpl implements CompilationService {
             return compilationRepository.findAll(pageable).stream()
                     .map(c -> compilationMapper.toDto(c, getHitsEvent(c.getId(),
                             LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true)))
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true, client)))
                     .collect(Collectors.toList());
         }
 
         return compilationRepository.findAllByPinned(pinned, pageable).stream()
                 .map(c -> compilationMapper.toDto(c, getHitsEvent(c.getId(),
                         LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true)))
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true, client)))
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +112,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = getCompilationOrThrow(compilationId);
         return compilationMapper.toDto(compilation, getHitsEvent(compilationId,
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true, client));
     }
 
     private Compilation getCompilationOrThrow(Long compilationId) {
@@ -120,18 +120,4 @@ public class CompilationServiceImpl implements CompilationService {
                 () -> new ObjectNotFoundException(String.format("Compilation with id=%d was not found", compilationId)));
     }
 
-    private Long getHitsEvent(Long eventId, String start, String end, Boolean unique) {
-
-        List<String> uris = new ArrayList<>();
-        uris.add("/events/" + eventId);
-
-        List<StatsDtoOutput> output = client.getStats(start, end, uris, unique);
-
-        Long view = 0L;
-
-        if (!output.isEmpty()) {
-            view = output.get(0).getHits();
-        }
-        return view;
-    }
 }
