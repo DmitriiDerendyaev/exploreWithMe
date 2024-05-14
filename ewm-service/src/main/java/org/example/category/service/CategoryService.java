@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface CategoryService {
 
-    public CategoryDto addCategoryAdmin(NewCategoryDto newCategoryDto);
+    CategoryDto addCategoryAdmin(NewCategoryDto newCategoryDto);
 
-    public void deleteCategoryAdmin(Long categoryId);
+    void deleteCategoryAdmin(Long categoryId);
 
-    public CategoryDto updateCategoryAdmin(CategoryDto categoryDto);
+    CategoryDto updateCategoryAdmin(CategoryDto categoryDto);
 
-    public List<CategoryDto> getCategories(Pageable pageable);
+    List<CategoryDto> getCategories(Pageable pageable);
 
-    public CategoryDto getCategory(Long categoryId);
+    CategoryDto getCategory(Long categoryId);
 }

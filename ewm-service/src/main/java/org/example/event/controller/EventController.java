@@ -129,4 +129,22 @@ public class EventController {
     public EventFullDto getEventByIdPublic(@PathVariable Long id, HttpServletRequest request) {
         return eventService.getEventByIdPublic(id, request);
     }
+
+    @GetMapping("/users/{userId}/subscriptions/{authorId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventFullDto> findEventsByUser(@PathVariable Long userId,
+                                               @PathVariable Long authorId,
+                                               @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                               @RequestParam(defaultValue = "10") @Min(1) Integer size) {
+
+        return eventService.findEventsByUser(userId, authorId, PageRequest.of(from / size, size));
+    }
+
+    @GetMapping("/users/subscriptions/{userId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> findEventsByAllUsers(@PathVariable Long userId,
+                                                    @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                                    @RequestParam(defaultValue = "10") @Min(1) Integer size) {
+        return eventService.findEventsByAllUsers(userId, PageRequest.of(from / size, size));
+    }
 }

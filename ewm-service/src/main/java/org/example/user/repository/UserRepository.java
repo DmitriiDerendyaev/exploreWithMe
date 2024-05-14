@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    public List<User> findByIdIn(List<Long> id);
+    List<User> findByIdIn(List<Long> id);
 
-    public boolean existsUserByEmail(String email);
+    boolean existsUserByEmail(String email);
 }
