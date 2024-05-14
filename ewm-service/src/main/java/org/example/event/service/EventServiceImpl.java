@@ -45,7 +45,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.example.constant.Constants.DATE_FORMAT;
-import static org.example.constant.HitsEventUtil.getHitsEvent;
+import static org.example.utils.HitsEventUtil.getHitsEvent;
 
 @Slf4j
 @Service

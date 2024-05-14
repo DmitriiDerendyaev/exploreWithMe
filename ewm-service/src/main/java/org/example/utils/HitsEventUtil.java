@@ -1,4 +1,4 @@
-package org.example.constant;
+package org.example.utils;
 
 import org.example.StatsClient;
 import org.example.StatsDtoOutput;
